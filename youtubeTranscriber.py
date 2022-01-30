@@ -4,9 +4,13 @@ import requests
 import pprint
 from configure import auth_key
 from time import sleep
-
-"""This code is from Assembly AI tutorial: https://www.youtube.com/watch?v=CrLmgrGiVVY&t=214s"""
-
+import os
+#from Summarizer import read_article 
+#from Summarizer import sentence_similarity 
+#from Summarizer import build_similarity_matrix 
+#from Summarizer import generate_summary 
+#from Summarizer import degree_summary 
+#this code is from Assembly AI tutorial
 if 'status' not in st.session_state:
     st.session_state['status'] = 'submitted'
 
@@ -90,16 +94,16 @@ def refresh_state():
 	st.session_state['status'] = 'submitted'
 
 
-st.title('Easily transcribe YouTube videos')
+st.title('Smarizer')
 
-link = st.text_input('Enter your YouTube video link', 'https://youtu.be/dccdadl90vs', on_change=refresh_state)
+link = st.text_input('Enter your YouTube video URL', 'https://www.youtube.com/watch?v=qDj0e96WfrY', on_change=refresh_state)
 st.video(link)
 
 st.text("The transcription is " + st.session_state['status'])
 
 polling_endpoint = transcribe_from_link(link, False)
 
-st.button('check_status', on_click=get_status, args=(polling_endpoint,))
+st.button('Get transcript', on_click=get_status, args=(polling_endpoint,))
 
 transcript=''
 if st.session_state['status']=='completed':
@@ -107,3 +111,8 @@ if st.session_state['status']=='completed':
 	transcript = polling_response.json()['text']
 
 st.markdown(transcript)
+
+with  open("transcription.txt", "w") as file:
+    file.write(transcript)
+    file.close()
+
